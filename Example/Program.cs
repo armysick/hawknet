@@ -36,34 +36,50 @@ namespace Example
 
                 var clientHandler = new HawkClientMessageHandler(new HttpClientHandler(), credential, "some-app-data");
                 var client = new HttpClient(clientHandler);
+                // not now var client = new HttpClient();
 
+                
                 var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:8091/Api/HelloWorld");
                 request.Headers.Host = "localhost:8091";
 
+                // credential.Key = "errada";  <- Point where credentials are used.
+                credential.Key = "xerxhqb98rpaxn39848xrunpaw3489ruxnpa98w4rxn";
                 var response = client.SendAsync(request).Result;
+                response = client.SendAsync(request).Result;
+                
                 string message = response.Content.ReadAsStringAsync().Result;
                 Console.WriteLine("Response {0} - Http Status Code {1}", message, response.StatusCode);
 
-                var client2 = new HttpClient();
+                /*var client2 = new HttpClient();
 
                 request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:8091/Api/HelloWorldAnonymous");
                 request.Headers.Host = "localhost:8091";
 
                 response = client2.SendAsync(request).Result;
                 message = response.Content.ReadAsStringAsync().Result;
-                Console.WriteLine("Response {0} - Http Status Code {1}", message, response.StatusCode);
+                Console.WriteLine("Response {0} - Http Status Code {1}", message, response.StatusCode);*/
 
+                Console.WriteLine("\n\n CLI 3:  \n\n\n");
                 var client3 = new HttpClient();
 
+                //credential.Key = "errada";  <- Ponto onde credenciais sao usadas
+                
+                //String timeStampBef = DateTime.Now.ToString();
+                
+                
                 var bewit = Hawk.GetBewit("localhost", new Uri("http://localhost:8091/Api/HelloWorld"), credential, 60000);
+                
+                //String timeStampAft = DateTime.Now.ToString();
 
+                
                 request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:8091/Api/HelloWorld?bewit=" + bewit);
                 request.Headers.Host = "localhost:8091";
 
-                response = client3.SendAsync(request).Result;
-
-                message = response.Content.ReadAsStringAsync().Result;
-                Console.WriteLine("Response {0} - Http Status Code {1}", message, response.StatusCode);
+                
+                var response2 = client3.SendAsync(request).Result;
+                
+                message = response2.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Response {0} - Http Status Code {1}", message, response2.StatusCode);
                 
                 Console.WriteLine("Press a key to close the app");
                 Console.ReadLine();

@@ -41,6 +41,8 @@ namespace HawkNet
                 nonce,
                 payloadHash);
 
+            //Console.WriteLine("hawk: " + hawk);
+            
             request.Headers.Authorization = new AuthenticationHeaderValue("Hawk", hawk);
         }
 

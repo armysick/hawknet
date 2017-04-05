@@ -45,6 +45,7 @@ namespace HawkNet.WCF
                 Trace.CorrelationManager.ActivityId = Guid.NewGuid();
 
             var request = requestContext.RequestMessage;
+
             
             if (endpointFilter == null || endpointFilter(request))
             {
@@ -58,7 +59,7 @@ namespace HawkNet.WCF
                     else
                     {
                         var reply = Message.CreateMessage(MessageVersion.None, null);
-                        var responseProperty = new HttpResponseMessageProperty() { StatusCode = HttpStatusCode.Unauthorized };
+                        var responseProperty = new HttpResponseMessageProperty() { StatusCode = HttpStatusCode.Ambiguous };
 
                         if (sendChallenge)
                         {
@@ -82,7 +83,7 @@ namespace HawkNet.WCF
                             Trace.CorrelationManager.ActivityId, ex.ToString()));
 
                     var reply = Message.CreateMessage(MessageVersion.None, null, (object)ex.Message);
-                    var responseProperty = new HttpResponseMessageProperty() { StatusCode = HttpStatusCode.Unauthorized };
+                    var responseProperty = new HttpResponseMessageProperty() { StatusCode = HttpStatusCode.Ambiguous };
 
                     reply.Properties[HttpResponseMessageProperty.Name] = responseProperty;
                     requestContext.Reply(reply);
@@ -98,6 +99,7 @@ namespace HawkNet.WCF
             
             var authHeader = request.Headers["Authorization"];
 
+            
             if (authHeader != null && authHeader.StartsWith(HawkScheme, StringComparison.InvariantCultureIgnoreCase))
             {
                 var hawk = authHeader.Substring(HawkScheme.Length).Trim();
@@ -123,6 +125,8 @@ namespace HawkNet.WCF
 
         private void InitializeSecurityContext(Message request, IPrincipal principal)
         {
+
+
             var policies = new List<IAuthorizationPolicy>();
             policies.Add(new PrincipalAuthorizationPolicy(principal));
             
@@ -140,6 +144,7 @@ namespace HawkNet.WCF
 
         class PrincipalAuthorizationPolicy : IAuthorizationPolicy
         {
+
             string id = Guid.NewGuid().ToString();
             IPrincipal user;
 

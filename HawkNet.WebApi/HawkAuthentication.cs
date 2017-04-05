@@ -177,8 +177,9 @@ namespace HawkNet.WebApi
                                         CancellationToken cancellationToken)
             {
                 var response = await next.ExecuteAsync(cancellationToken);
-                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                if (response.StatusCode == HttpStatusCode.Ambiguous)
                 {
+                    Console.WriteLine("AMBIGUO PA CRL!");
                     var ts = Hawk.ConvertToUnixTimestamp(DateTime.Now).ToString();
                     var challenge = string.Format("ts=\"{0}\" ntp=\"{1}\"",
                         ts, "pool.ntp.org");

@@ -19,7 +19,7 @@ namespace Example.WCF
     {
         public string Hello()
         {
-            return "Hello " + 
+            return "Hello pleaseee" + 
                 OperationContext.Current.ServiceSecurityContext.PrimaryIdentity.Name;
         }
     }

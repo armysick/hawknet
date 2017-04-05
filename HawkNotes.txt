@@ -1,0 +1,14 @@
+[HawkAuthentication(type ...  ]
+[Authorize]
+
+
+HawkAuthentication https://github.com/pcibraro/hawknet/blob/651ca493e99f52b601d0ccbd12385145ff268377/HawkNet.WebApi/HawkAuthentication.cs#L41
+GetBewit (Client) https://github.com/pcibraro/hawknet/blob/master/Example/Program.cs
+func GetBewit + CalculateMac https://github.com/pcibraro/hawknet/blob/651ca493e99f52b601d0ccbd12385145ff268377/HawkNet/Hawk.cs
+CalculateMac (a funcao) https://github.com/pcibraro/hawknet/blob/651ca493e99f52b601d0ccbd12385145ff268377/HawkNet/Hawk.cs
+
+
+
+
+
+Example.HawkCredentialRepository  <-  Credentials

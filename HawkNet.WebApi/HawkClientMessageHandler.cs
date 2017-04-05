@@ -24,6 +24,7 @@ namespace HawkNet.WebApi
         public HawkClientMessageHandler(HttpMessageHandler innerHandler, HawkCredential credential, string ext = "", DateTime? ts = null, string nonce = null, bool includePayloadHash = false)
             : base(innerHandler)
         {
+
             if (credential == null ||
                 string.IsNullOrEmpty(credential.Id) ||
                 string.IsNullOrEmpty(credential.Key) ||
@@ -41,24 +42,37 @@ namespace HawkNet.WebApi
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
         {
-            string payloadHash = null;
-
-            if (this.includePayloadHash &&
-                request.Method != HttpMethod.Get &&
-                request.Content != null)
+            var to_r = new HttpResponseMessage();
+            for (int i = 0; i < 10; i++)
             {
-                payloadHash = Hawk.CalculatePayloadHash(await request.Content.ReadAsStringAsync().ConfigureAwait(false),
-                    request.Content.Headers.ContentType.MediaType,
-                    credential);
+                string payloadHash = null;
+
+                if (this.includePayloadHash &&
+                    request.Method != HttpMethod.Get &&
+                    request.Content != null)
+                {
+                    payloadHash = Hawk.CalculatePayloadHash(await request.Content.ReadAsStringAsync().ConfigureAwait(false),
+                        request.Content.Headers.ContentType.MediaType,
+                        credential);
+                }
+
+                request.SignRequest(credential,
+                    this.ext,
+                    this.ts,
+                    this.nonce,
+                    payloadHash);
+
+
+                //Console.WriteLine("request antes do return: " + request);
+                DateTime bef = DateTime.Now;
+                to_r = await base.SendAsync(request, cancellationToken);
+                DateTime aft = DateTime.Now;
+                var diffInSeconds = (aft - bef).TotalSeconds;
+
+                Console.WriteLine("BEF: {0} \n AFT: {1}\n \n diff: {2}", bef, aft, diffInSeconds);
             }
-
-            request.SignRequest(credential,
-                this.ext,
-                this.ts,
-                this.nonce,
-                payloadHash);
-
-            return await base.SendAsync(request, cancellationToken);
+                return to_r;
+            
         }
     }
 }
